@@ -10,3 +10,6 @@ add src/uphold.py /app/uphold.py
 add src/all.py /app/all.py
 
 cmd python /app/all.py
+# cmd python /app/binance.py
+# cmd python /app/coinbase.py
+# cmd python /app/uphold.py
