@@ -1,0 +1,9 @@
+from python:3-slim
+
+add requirements.txt /tmp/requirements.txt
+
+run pip install -r /tmp/requirements.txt
+
+add src/uphold.py /app/uphold.py
+
+cmd python /app/uphold.py
