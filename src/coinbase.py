@@ -40,9 +40,15 @@ class CoinbaseAPI():
     try:
       out = self.conn.recv()
     except ConnectionResetError:
-      return {"exchange": self.name, "error": "connection reset"}
+      return {"exchange": self.name, "error": "ConnectionResetError"}
+    except websocket._exceptions.WebSocketConnectionClosedException:
+      return {"exchange": self.name, "error": "websocket._exceptions.WebSocketConnectionClosedException"}
 
-    D = json.loads(out)
+    try:
+      D = json.loads(out)
+    except json.decoder.JSONDecodeError:
+      return {"exchange": self.name, "error": "json.decoder.JSONDecodeError", "text": str(out)}
+
     D.update({"exchange": self.name})
     return D
 
@@ -53,4 +59,3 @@ if __name__ == "__main__":
     D = api()
     print(json.dumps(D))
     sleep(2)
-
