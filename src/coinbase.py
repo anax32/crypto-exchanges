@@ -1,7 +1,4 @@
-from time import sleep
-import json
-
-import websocket
+from websocket_subscriber import WebSocketSubscriber
 
 """
   Coinbase Pro API
@@ -20,44 +17,21 @@ import websocket
 """
 # FIXME: check for rate-limit reset on 429 error:
 
-class CoinbaseAPI():
+class CoinbaseAPI(WebSocketSubscriber):
   def __init__(self):
-    self.name = "coinbase"
-    self.uri = "wss://ws-feed.pro.coinbase.com"
-    self.currencies = ["BTC-GBP", "ETH-GBP", "ETH-BTC"]
-    self.conn = None
-    # create the params
-    self.subscription_params = {"type": "subscribe",
-                                "channels": [{"name": "ticker",
-                                              "product_ids": self.currencies}]
-                               }
+    super(CoinbaseAPI, self).__init__(
+        "coinbase",
+        "wss://ws-feed.pro.coinbase.com",
+        {"type": "subscribe",
+                 "channels": [{"name": "ticker",
+                               "product_ids": ["BTC-GBP", "ETH-GBP", "ETH-BTC"]}]
+        }
+    )
 
-
-  def __call__(self):
-    if self.conn is None:
-      #print(json.dumps(subscribe))
-      self.conn = websocket.create_connection(self.uri)
-      subscription_string = json.dumps(self.subscription_params)
-      self.conn.send(subscription_string)
-      return {"exchange": self.name, "error": "create_connection('%s')" % subscription_string}
-
-    try:
-      out = self.conn.recv()
-    except ConnectionResetError:
-      return {"exchange": self.name, "error": "ConnectionResetError"}
-    except websocket.WebSocketConnectionClosedException:
-      self.conn = None
-      return {"exchange": self.name, "error": "websocket.WebSocketConnectionClosedException"}
-
-    try:
-      D = json.loads(out)
-    except json.decoder.JSONDecodeError:
-      return {"exchange": self.name, "error": "json.decoder.JSONDecodeError", "text": str(out)}
-
-    D.update({"exchange": self.name})
-    return D
 
 if __name__ == "__main__":
+  from time import sleep
+
   api = CoinbaseAPI()
 
   while True:
