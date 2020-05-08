@@ -15,4 +15,5 @@ docker logs coinbase \
   | grep coinbase \
   | grep -v error \
   | grep ETH-BTC \
-  | jq -r -s '.[] | [.price, .time] | @csv'
+  | jq -r -s '.[] | [.price, .time] | @csv' \
+  | sed '/^,/d'
