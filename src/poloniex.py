@@ -1,3 +1,4 @@
+import os
 from time import sleep
 
 from websocket_subscriber import WebSocketSubscriber
@@ -29,7 +30,11 @@ class PoloniexAPI(WebSocketSubscriber):
     )
 
     # load this bullshit currency map
-    with open("poloniex-currency-ids.dat", "rb") as f:
+    id_filename = os.environ.get("POLONIEX_DAT", "poloniex-currency-ids.dat")
+
+    self.currency_map = {}
+
+    with open(id_filename, "r") as f:
       for x in f.readlines():
         p = x.split(",")
         self.currency_map.update({p[0]: p[1]})
