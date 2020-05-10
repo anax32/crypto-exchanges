@@ -1,5 +1,3 @@
-import pytest
-
 from coinbase import CoinbaseAPI
 
 def test_coinbase_init():
