@@ -73,7 +73,13 @@ For example:
              "lowest-ask": R[2][2],
              "highest-bid": R[2][3],
             }
-        D.update({"currency": self.currency_map[R[2][0]]})
+
+        try:
+          currency = self.currency_map[R[2][0]]
+        except KeyError:
+          currency = "unknown'%i'" % R[2][0]
+
+        D.update({"currency": currency})
         return D
       else:
         # order book from currency name
