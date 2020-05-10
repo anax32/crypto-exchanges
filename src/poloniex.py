@@ -1,4 +1,5 @@
 import os
+import json
 from time import sleep
 
 from websocket_subscriber import WebSocketSubscriber
@@ -22,10 +23,12 @@ class PoloniexAPI(WebSocketSubscriber):
     channel descriptions:
       https://docs.poloniex.com/#channel-descriptions
     """
+    self.channel = 1002 # ticker id
+
     super(PoloniexAPI, self).__init__(
         "poloniex",
         "wss://api2.poloniex.com",
-        {"command": "subscribe", "channel": 1102},
+        {"command": "subscribe", "channel": self.channel},
         self.parse_response
     )
 
@@ -37,7 +40,7 @@ class PoloniexAPI(WebSocketSubscriber):
     with open(id_filename, "r") as f:
       for x in f.readlines():
         p = x.split(",")
-        self.currency_map.update({p[0]: p[1]})
+        self.currency_map.update({int(p[0].strip()): p[1].strip()})
 
     self.conn = None
     # create the params
@@ -53,20 +56,44 @@ For example:
 
 [ 1002, null, [ 149, "382.98901522", "381.99755898", "379.41296309", "-0.04312950", "14969820.94951828", "38859.58435407", 0, "412.25844455", "364.56122072" ] ]
     """
-    R = json.loads(out)
+    R = json.loads(response)
 
-    if len(R) == 2:
-      return {"exchange": self.name, "error": "subscription acknowledgement"}
+    if len(R) == 2 and int(R[0]) == self.channel and int(R[1]) == 1:
+      return {"exchange": self.name, "info": "subscription acknowledgement for '%i'" % int(R[0])}
+    elif len(R) == 1 and int(R[0]) == 1010:
+      return {"exchange": self.name, "info": "heartbeat"}
     elif len(R) > 2:
-      Q = R[2]
-      D = {"pair-id": R[2][0],
-           "last-trade-price": R[2][1],
-           "lowest-ask": R[2][2],
-           "highest-bid": R[2][3],
-          }
-      D.update({"currency": self.currency_map[R[2][0]]})
+      channel_id = R[0]
+      sequence_id = R[1]
+
+      if channel_id == 1002:
+        # ticker
+        # https://docs.poloniex.com/#ticker-data
+        D = {"price": R[2][1],
+             "lowest-ask": R[2][2],
+             "highest-bid": R[2][3],
+            }
+        D.update({"currency": self.currency_map[R[2][0]]})
+        return D
+      else:
+        # order book from currency name
+        # https://docs.poloniex.com/#price-aggregated-book
+        # NB: we don't do anyhting with the order-book
+        mode = R[2][0][0]
+        currency = R[2][0][1]["currencyPair"]
+
+        orders = R[2][0][1]["orderBook"]
+        print("orderbook len: %i" % len(orders))
+        print("order 0: '%s'" % str(orders[0]))
+
+        D = {"price": R[2][1],
+             "lowest-ask": R[2][2],
+             "highest-bid": R[2][3],
+            }
+        D.update({"currency": currency})
+        return D
     else:
-      return {"exchange": self.name, "error": "unknown response"}
+      return {"exchange": self.name, "error": "unknown response '%s'" % json.dumps(R)}
 
 
 if __name__ == "__main__":
