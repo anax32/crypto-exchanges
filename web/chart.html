@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>my phukin chart u prik</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+<!--
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datasource@0.1.0"></script>
+-->
+</head>
+
+<body>
+<h1>chart</h1>
+<div style="width: 100%; height=60%;">
+  <canvas id="canvas"></canvas>
+</div>
+<button id="fetch">Fetch</button>
+<script>
+window.chartColors = {
+  red: 'rgb(255, 99, 132)',
+  orange: 'rgb(255, 159, 64)',
+  yellow: 'rgb(255, 205, 86)',
+  green: 'rgb(75, 192, 192)',
+  blue: 'rgb(54, 162, 235)',
+  purple: 'rgb(153, 102, 255)',
+  grey: 'rgb(201, 203, 207)'
+};
+
+var config = {
+    type: 'line',
+    data: {},
+    options: {
+      animation : { duration: 0 },
+      responsive: true,
+      responsiveAnimationDuration: 0,
+      title: {
+        display: true,
+        text: 'Crypto-Exchange Rates'
+      },
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+      },
+      hover: {
+        animationDuration: 0,
+        mode: 'nearest',
+        intersect: true
+      },
+      scales: {
+        xAxes: [{
+          type: 'time',
+          time: { unit: 'hour' },
+          display: true,
+          ticks: { autoSkip: true, maxTicksLimit: 20 },
+        }],
+        yAxes: [{
+          id: 0,
+          type: 'linear',
+          position: 'left',
+          display: true,
+          scaleLabel: { display: true, labelString: 'Value' }
+        }]
+      },
+      elements: {
+        line: {
+          tension: 0, // disable bezier curves
+          borderWidth: 0,
+          fill: false,
+          stepped: true,
+        },
+        point: {radius: 0}
+      },
+      legend: {
+        display: true,
+        position: 'bottom',
+        labels: { padding: 30},
+      }
+    }
+  };
+
+
+  var colorNames = Object.keys(window.chartColors);
+
+
+  function add_csv_data() {
+    web_data = JSON.parse(this.responseText);
+
+    var pair_names = [...new Set(web_data.map(e => e.product_id))];
+    console.log("pairs: " + pair_names);
+
+    var pair_data = {};
+
+    pair_names.forEach(function(pair_name, index)
+    {
+      pair_data[pair_name] = 
+        web_data.filter(e => e.product_id === pair_name).map(e => ({'x': Date.parse(e.time), 'y': e.price}))
+    });
+/*
+    var n = 10000;
+
+    for (var pair_name in pair_data)
+    {
+      console.log(pair_name + ": " + pair_data[pair_name].length);
+      var l = pair_data[pair_name].length;
+      pair_data[pair_name] = pair_data[pair_name].slice(l - n, l);
+    }
+*/
+    exchange_data = [];
+    y_axes = [];
+
+    for (var pair_name in pair_data)
+    {
+      idx = Object.keys(pair_data).indexOf(pair_name);
+
+      exchange_data.push({
+        label: pair_name,
+        backgroundColor: window.chartColors[colorNames[idx]],
+        borderColor: window.chartColors[colorNames[idx]],
+        data: pair_data[pair_name],
+        yAxisID: idx,
+      });
+
+      y_axes.push({
+        id: idx,
+        type: 'linear',
+        position: 'right',
+        display: true,
+        scaleLabel: { display: true, labelString: pair_name },
+        gridLines: {
+          color: window.chartColors[colorNames[idx]]
+        }
+      });
+    }
+
+    // create new scales
+    config.options.scales.yAxes = y_axes;
+    config.data.datasets = exchange_data;
+    window.myLine.update();
+  }
+
+  window.onload = function() {
+    var ctx = document.getElementById('canvas').getContext('2d');
+    window.myLine = new Chart(ctx, config);
+
+    xhr = new XMLHttpRequest();
+    xhr.addEventListener("load", add_csv_data);
+    xhr.open("GET", "http://127.0.0.1:8080/newlog.json");
+    xhr.send();
+  }
+</script>
+</body>
+</html>
