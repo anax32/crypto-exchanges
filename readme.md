@@ -5,14 +5,15 @@ Draws it in a ChartJS view.
 
 ## Exchanges
 
-+ Coinbase
-+ Binance
-+ Poloniex
-+ Uphold
++ [Coinbase](https://developers.coinbase.com/api/v2#introduction)
++ [Binance](https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md)
++ [Poloniex](https://docs.poloniex.com/)
++ [Uphold](https://uphold.com/en/developer/api/documentation/)
 
 ### TODO
 
 + Kraken
++ Coinburp
 
 # Deployments
 
@@ -26,9 +27,7 @@ The data is tagged with the name of the exchange for query.
 
 `./build-images.sh ; ./run-docker.sh`
 
-## Kubernetes
-
-__in progress__
+## Kubernetes (in progress)
 
 `./build-images.sh ; kubectl apply -f ./k8s`
 
