@@ -30,6 +30,7 @@ class CoinbaseAPI(WebSocketSubscriber):
 
 
 if __name__ == "__main__":
+  import json
   from time import sleep
 
   api = CoinbaseAPI()
