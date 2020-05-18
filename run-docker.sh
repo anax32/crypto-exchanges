@@ -1,12 +1,12 @@
 #!/bin/bash -u
 
-CONT=polon
 LOG=flulog
 DB=mongo
 CONF=fluentd.conf
 NET=netx
 
-docker stop $CONT ; docker rm $CONT
+docker stop poloniex ; docker rm poloniex
+docker stop coinbaseb ; docker rm coinbaseb
 docker stop $LOG ; docker rm $LOG
 docker stop $DB ; docker rm $DB
 docker network rm $NET
@@ -86,9 +86,20 @@ docker run \
   -d -it \
   --log-driver=fluentd \
   --log-opt fluentd-address=127.0.0.1:24224 \
-  --log-opt tag="docker.{{.ID}}" \
-  --log-opt tag="mongo" \
-  --name $CONT \
+  --log-opt tag="docker.{{.Name}}" \
+  --log-opt tag="mongo.{{.Name}}" \
+  --name poloniex \
   --network $NET \
   crypto.exchanges \
   python src/poloniex.py
+
+docker run \
+  -d -it \
+  --log-driver=fluentd \
+  --log-opt fluentd-address=127.0.0.1:24224 \
+  --log-opt tag="docker.{{.Name}}" \
+  --log-opt tag="mongo.{{.Name}}" \
+  --name coinbaseb \
+  --network $NET \
+  crypto.exchanges \
+  python src/coinbase.py
