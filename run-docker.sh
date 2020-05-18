@@ -1,5 +1,17 @@
 #!/bin/bash -u
 
+#
+# TESTING SCRIPT
+# sets up the docker images and runs
+# + mongodb
+# + fluentd
+# + exchange loggers
+#
+# -> exchange loggers write to stdout
+# -> containers logdriver is fluentd container
+# -> fluentd forwards json data to mongodb
+#
+
 LOG=flulog
 DB=mongo
 CONF=fluentd.conf
