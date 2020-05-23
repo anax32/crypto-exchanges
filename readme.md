@@ -31,6 +31,23 @@ The data is tagged with the name of the exchange for query.
 
 `./build-images.sh ; kubectl apply -f ./k8s`
 
+## AWS via Terraform
+
+```bash
+cd tf
+terraform init
+terraform plan
+terraform apply
+```
+You need to set up some credentials, keys, etc.
+
+This will build and run the docker images on a `t2.micro` instance.
+
+`terraform destroy` will delete all resources.
+Be sure you have downloaded any data you want before destroy.
+
+See [terraform readme](tf/readme.md) for more info.
+
 # Visualisation
 
 ## ChartJS
