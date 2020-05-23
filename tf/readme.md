@@ -18,6 +18,6 @@ Requirements:
 + add the public key string to the `.tfvars` file in the `public_key` variable
 + `terraform apply`
 + create the pem file
-    + `ssh-keygen -f <ssh key filename> -e -m pem > <pem filename>`
+    + `ssh-keygen -f ${SSH_KEY_FILENAME} -e -m pem > ${PEM_FILENAME}`
 + connect to the instance
-    + `ssh -i <pem filename> <username>@<instance name>`
+    + `ssh -i ${PEM_FILENAME} ${USERNAME}@${INSTANCE_NAME}`
