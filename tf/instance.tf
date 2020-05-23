@@ -98,3 +98,11 @@ resource "aws_s3_bucket" "s3_upload_bucket" {
   tags = merge(var.default_tags,
                {Name = "btc.exchanges.storage"})
 }
+
+output "instance_public_dns" {
+  value = aws_instance.instance.public_dns
+}
+
+output "instance_public_ip" {
+  value = aws_instance.instance.public_ip
+}
