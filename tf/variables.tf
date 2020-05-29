@@ -22,3 +22,11 @@ variable "whitelist_ips" {
 variable "public_key" {
   type = map(string)
 }
+
+variable "default_tags" {
+  type = map
+  default = {
+    project = "btc.exchanges"
+    mode = "infrastructure"
+  }
+}
