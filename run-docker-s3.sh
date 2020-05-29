@@ -65,8 +65,6 @@ docker run \
   -v $(pwd)/fluent-data:/fluentd/log \
   -v $(pwd)/config/fluentd:/fluentd/etc \
   -e FLUENTD_CONF=$CONF \
-  -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-  -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
   --name $LOG \
   --network $NET \
   crypto.fluent
