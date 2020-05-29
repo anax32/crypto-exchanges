@@ -30,3 +30,7 @@ variable "default_tags" {
     mode    = "infrastructure"
   }
 }
+
+variable "aws_s3_output_name" {
+  type = string
+}
