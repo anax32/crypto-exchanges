@@ -28,20 +28,17 @@ resource "aws_instance" "instance" {
   vpc_security_group_ids = [aws_security_group.default.id]
   subnet_id              = aws_subnet.public.id
 
-  user_data = file("scripts/vm-startup.sh")
+  user_data = <<-EOT
+    #!/bin/bash
+    export AWS_DEFAULT_REGION=${var.aws_region}
+    export S3_BUCKET=${var.aws_s3_output_name}
+    ${file("scripts/vm-startup.sh")}
+  EOT
 
   key_name = aws_key_pair.key.key_name
 
   tags = merge(var.default_tags,
   { Name = "btc.exchanges.instance" })
-}
-
-resource "aws_s3_bucket" "s3_upload_bucket" {
-  bucket = "exchanges.btc.bayis.co.uk"
-  region = var.aws_region
-
-  tags = merge(var.default_tags,
-  { Name = "btc.exchanges.storage" })
 }
 
 output "instance_public_dns" {
