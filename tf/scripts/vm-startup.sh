@@ -5,8 +5,8 @@ apt-get install -y \
   docker.io \
   git
 
-git clone https://github.com/anax32/crypto-exchanges
+git clone --branch s3 https://github.com/anax32/crypto-exchanges
 cd crypto-exchanges
 
 ./build-images.sh
-./run-docker.sh
+AWS_REGION=eu-west-2 ./run-docker-s3.sh
