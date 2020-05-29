@@ -11,7 +11,7 @@ variable "aws_region" {
 }
 
 variable "aws_availability_zones" {
-  type = list(string)
+  type    = list(string)
   default = ["europe-west-2-a"]
 }
 
@@ -27,6 +27,6 @@ variable "default_tags" {
   type = map
   default = {
     project = "btc.exchanges"
-    mode = "infrastructure"
+    mode    = "infrastructure"
   }
 }
