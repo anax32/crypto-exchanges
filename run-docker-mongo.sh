@@ -23,6 +23,9 @@ docker stop $LOG ; docker rm $LOG
 docker stop $DB ; docker rm $DB
 docker network rm $NET
 
+mkdir -p ./config/fluentd
+mkdir -p ./config/mongo
+
 # https://docs.fluentd.org/output/mongo
 # https://docs.fluentd.org/how-to-guides/apache-to-mongodb
 cat << EOF > ./config/fluentd/$CONF

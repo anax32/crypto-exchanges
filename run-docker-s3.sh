@@ -20,6 +20,8 @@ docker stop coinbaseb ; docker rm coinbaseb
 docker stop $LOG ; docker rm $LOG
 docker network rm $NET
 
+mkdir -p ./config/fluentd
+
 # https://docs.fluentd.org/output/s3
 # https://docs.fluentd.org/how-to-guides/apache-to-s3
 cat << EOF > ./config/fluentd/$CONF
@@ -41,7 +43,7 @@ cat << EOF > ./config/fluentd/$CONF
   @type s3
 
   s3_bucket ${S3_BUCKET}
-  s3_region ${S3_REGION}
+  s3_region ${AWS_DEFAULT_REGION}
   path ex/logs/
   <buffer tag,time>
     @type file
