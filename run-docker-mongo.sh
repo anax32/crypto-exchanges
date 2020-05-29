@@ -14,7 +14,7 @@
 
 LOG=flulog
 DB=mongo
-CONF=fluentd.conf
+CONF=fluentd-mongo.conf
 NET=netx
 
 docker stop poloniex ; docker rm poloniex
@@ -102,6 +102,7 @@ docker run \
   --log-opt fluentd-address=127.0.0.1:24224 \
   --log-opt tag="docker.{{.Name}}" \
   --log-opt tag="mongo.{{.Name}}" \
+  --log-opt tag="s3.{{.Name}}" \
   --name poloniex \
   --network $NET \
   crypto.exchanges \
@@ -113,6 +114,7 @@ docker run \
   --log-opt fluentd-address=127.0.0.1:24224 \
   --log-opt tag="docker.{{.Name}}" \
   --log-opt tag="mongo.{{.Name}}" \
+  --log-opt tag="s3.{{.Name}}" \
   --name coinbaseb \
   --network $NET \
   crypto.exchanges \
