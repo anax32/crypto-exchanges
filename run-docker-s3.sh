@@ -35,7 +35,6 @@ cat << EOF > ./config/fluentd/$CONF
   @type parser
   format json
   key_name log
-  time_type string
   time_format %iso8601
 </filter>
 
