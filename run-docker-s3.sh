@@ -48,7 +48,7 @@ cat << EOF > ./config/fluentd/$CONF
   <buffer tag,time>
     @type file
     path /fluentd/log/s3
-    timekey 3600 # 1 hour partition
+    timekey 12h # 1 hour partition
     timekey_wait 10m
     timekey_use_utc true # use utc
     chunk_limit_size 256m
