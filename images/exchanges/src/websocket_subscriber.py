@@ -1,6 +1,6 @@
 import json
-
 import websocket
+
 
 class WebSocketSubscriber:
   def __init__(self, name, uri, subscription_params, parse_fn=None):
@@ -8,14 +8,16 @@ class WebSocketSubscriber:
        name: identififer
        uri: websocket location
        subscription_params: dictionary to pass on subscribe
+       parse_fn: callback parse function (default is available with self.default_parse_fn)
     """
     self.name = name
     self.uri = uri
     self.subscription_params = subscription_params
     self.conn = None
+    self.default_parse_fn = json.loads
 
     if parse_fn is None:
-      self.parse_fn = json.loads
+      self.parse_fn = self.default_parse_fn
     else:
       self.parse_fn = parse_fn
 
