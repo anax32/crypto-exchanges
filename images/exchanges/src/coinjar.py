@@ -40,7 +40,7 @@ class CoinjarAPI(WebSocketSubscriber):
     return super(CoinJarAPI, self).default_parse_fn(response)
 
 if __name__ == "__main__":
-  api = PoloniexAPI()
+  api = CoinjarAPI()
 
   while True:
     D = api()
